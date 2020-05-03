@@ -19,6 +19,6 @@ et ensuite redémarrer le service ssh
 
 */etc/init.d/ssh restart*
 
-et finalement sur le temrinal de la machine hôte
+et finalement sur le terminal de la machine hôte
 
 *ssh root@192.168.122.90*
