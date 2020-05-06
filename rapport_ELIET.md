@@ -13,22 +13,22 @@ J'ai ensuite choisi mon password root à l'aide de la commande passwd.
 
 Il est bien plus pratique de contrôler la VM par un terminal de la machine hôte, afin de pouvoir me connecter par ssh j'ai donc du modifier la ligne suivante dans le fichier **/etc/ssh/sshd_config** 
 
-*PermitRootLogin yes*
+PermitRootLogin yes
 
 et ensuite redémarrer le service ssh
 
-*/etc/init.d/ssh restart*
+/etc/init.d/ssh restart
 
 et finalement sur le terminal de la machine hôte
 
-*ssh root@192.168.122.90*
+ssh root@192.168.122.90
 
 
 ## 2. LXC Containers
 
 ### 2.1 Installation des packages
 
-*root@VMsas:/home/max# apt-get install lxc lxctl lxc-tests lxc-templates*
+root@VMsas:/home/max# apt-get install lxc lxctl lxc-tests lxc-templates
 
 ### 2.2 Configuration réseau des containers
 
