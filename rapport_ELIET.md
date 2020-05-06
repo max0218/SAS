@@ -52,9 +52,10 @@ On peut vérifier que tout ceci fonctionne à l'aide d'un 'ip a' qui donne :
     inet 10.0.3.1/24 scope global lxcbr0
        valid_lft forever preferred_lft forever*
 
-### 2.3 Création des containers
+### 2.3 Création des containers
 
 Pour créer notre premier container on éxécute :
+
 *root@VMsas:~# lxc-create -n c1 -t download
 *
 -n, --name=NAME        NAME of the container
@@ -69,6 +70,8 @@ Release:
 buster
 Architecture: 
 amd64*
+
+### 2.4 Demarrage du premier container
 
 On peut maintenant démarrer notre container c1   en mode daemon: 
 
