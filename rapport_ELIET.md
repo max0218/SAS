@@ -107,5 +107,47 @@ J'ai pu ensuite vérifier que le container avait bien démarré :
      RX bytes:      1.98 KiB
      Total bytes:   3.54 KiB
 
- 
- 
+Et vérifier sa configuration : 
+
+    root@VMsas:~# cat /var/lib/lxc/c1/config 
+    
+    # Template used to create this container: /usr/share/lxc/templates/lxc-download
+    # Parameters passed to the template:
+    # Template script checksum (SHA-1): 273c51343604eb85f7e294c8da0a5eb769d648f3
+    # For additional config options, please look at lxc.container.conf(5)
+
+    # Uncomment the following line to support nesting containers:
+    #lxc.include = /usr/share/lxc/config/nesting.conf
+    # (Be aware this has security implications)
+
+
+    # Distribution configuration
+    lxc.include = /usr/share/lxc/config/common.conf
+    lxc.arch = linux64
+
+    # Container specific configuration
+    lxc.apparmor.profile = generated
+    lxc.apparmor.allow_nesting = 1
+    lxc.rootfs.path = dir:/var/lib/lxc/c1/rootfs
+    lxc.uts.name = c1
+
+    # Network configuration
+    lxc.net.0.type = veth
+    lxc.net.0.link = lxcbr0
+    lxc.net.0.flags = up
+    lxc.net.0.hwaddr = 00:16:3e:5b:8c:4a
+
+### 2.5 Clonage du container c1 pour créer deux autres containers
+
+
+    root@VMsas:~# lxc-copy -n c1 -N c2
+    root@VMsas:~# lxc-ls
+    c1   
+  Le clonage ne fonctionne pas si c1 est dans l'état RUNNING :
+  
+    root@VMsas:~# lxc-stop c1
+    root@VMsas:~# lxc-copy -n c1 -N c2
+    root@VMsas:~# lxc-copy -n c1 -N c3
+    root@VMsas:~# lxc-ls
+    c1   c2   c3   
+
