@@ -172,9 +172,55 @@ Dans le fichier /etc/network/interfaces on insère :
 
 Et dans le fichier /etc/sysctl.conf : 
    
-    Uncomment the next line to enable packet forwarding for IPv4
+    #Uncomment the next line to enable packet forwarding for IPv4
     net.ipv4.ip_forward=1
    
 Et pour enable le forwarding on effectue cette commande : 
      
      echo 1 > /proc/sys/net/ipv4/ip_forward
+
+Et enfin on restart le service : 
+    
+    /etc/init.d/networking restart  
+    
+Et on vérifie que le bridge a bien été créé : 
+    
+    root@VMsas:/home/max# ip a
+    ...
+    4: lxc-bridge-nat: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
+        link/ether c2:3e:7f:ed:ef:fd brd ff:ff:ff:ff:ff:ff
+        inet 192.168.100.1/24 brd 192.168.100.255 scope global lxc-bridge-nat
+           valid_lft forever preferred_lft forever
+        inet6 fe80::c03e:7fff:feed:effd/64 scope link 
+           valid_lft forever preferred_lft forever
+          
+ ### 3.2 Configuration réseau des containers
+ 
+ #### Le container C1
+ 
+ On modifie la config de notre container c1 dans le fichier /var/lib/lxc/c1/config afin qu'il utilise le bridge nouvellement créé et la passerelle à la bonne addresse : 
+
+     #Network configuration
+    lxc.net.0.type = veth
+    lxc.net.0.link = lxc-bridge-nat
+    lxc.net.0.ipv4.address = 192.168.100.10/24
+    lxc.net.0.ipv4.gateway = 192.168.100.1
+    lxc.net.0.flags = up
+    lxc.net.0.hwaddr = 00:16:3e:5b:8c:4a
+
+On peut maintenant démarrer notre container et vérifier son IP  :
+
+    root@VMsas:/home/max# lxc-start c1
+    root@VMsas:/home/max# lxc-info c1
+    Name:           c1
+    State:          RUNNING
+    PID:            815
+    IP:             192.168.100.10
+    ...
+    
+On se connecte ensuite à la console de c1 afin de modifier son fichier de configuration du DNS /etc/resolv.conf :
+
+    root@VMsas:/home/max# lxc-attach c1
+    root@c1:/# echo 'nameserver 192.168.0.1' > /etc/resolv.conf
+
+Pour l'instant, ça ne fonctionne pas.
