@@ -240,3 +240,6 @@ On peut vérifier que ça fonctionne bien en pingant le serveur DNS de Google :
 
 ##  4. Installation du serveur DHCP
 
+### 4.1 Configurer le serveur DHCP sur le container C1
+
+
