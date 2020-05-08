@@ -228,11 +228,15 @@ On se connecte ensuite à la console de c1 afin de modifier son fichier de confi
 On peut vérifier que ça fonctionne bien en pingant le serveur DNS de Google : 
 
     root@c1:/# apt-get install iputils-ping
-    root@c1:/# ping 8.8.8.8
-    PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-    64 bytes from 8.8.8.8: icmp_seq=1 ttl=54 time=7.61 ms
-    ...
-    --- 8.8.8.8 ping statistics ---
-    11 packets transmitted, 11 received, 0% packet loss, time 17ms
-    rtt min/avg/max/mdev = 6.343/7.604/9.875/0.878 ms
+    root@c1:~# ping www.google.fr 
+    PING www.google.fr (216.58.215.35) 56(84) bytes of data.
+    64 bytes from par21s17-in-f3.1e100.net (216.58.215.35): icmp_seq=1 ttl=54 time=5.80 ms
+    64 bytes from par21s17-in-f3.1e100.net (216.58.215.35): icmp_seq=2 ttl=54 time=7.27 ms
+    ^C
+    --- www.google.fr ping statistics ---
+    2 packets transmitted, 2 received, 0% packet loss, time 3ms
+    rtt min/avg/max/mdev = 5.796/6.533/7.270/0.737 ms
+
+
+
 
