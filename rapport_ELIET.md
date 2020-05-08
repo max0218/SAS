@@ -218,9 +218,21 @@ On peut maintenant démarrer notre container et vérifier son IP  :
     IP:             192.168.100.10
     ...
     
-On se connecte ensuite à la console de c1 afin de modifier son fichier de configuration du DNS /etc/resolv.conf :
+On se connecte ensuite à la console de c1 afin de modifier son fichier de configuration du DNS /etc/resolv.conf pour qu'il soit identique à celui de la VM hôte : 
 
-    root@VMsas:/home/max# lxc-attach c1
-    root@c1:/# echo 'nameserver 192.168.0.1' > /etc/resolv.conf
+    root@VMsas:~# cat /etc/resolv.conf
+    nameserver 192.168.1.1
+    root@VMsas:~# lxc-attach c1
+    root@c1:/# echo 'nameserver 192.168.1.1' > /etc/resolv.conf
 
-Pour l'instant, ça ne fonctionne pas.
+On peut vérifier que ça fonctionne bien en pingant le serveur DNS de Google : 
+
+    root@c1:/# apt-get install iputils-ping
+    root@c1:/# ping 8.8.8.8
+    PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+    64 bytes from 8.8.8.8: icmp_seq=1 ttl=54 time=7.61 ms
+    ...
+    --- 8.8.8.8 ping statistics ---
+    11 packets transmitted, 11 received, 0% packet loss, time 17ms
+    rtt min/avg/max/mdev = 6.343/7.604/9.875/0.878 ms
+
