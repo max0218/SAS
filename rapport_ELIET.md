@@ -4,8 +4,7 @@
 
 ###  1.1 Installation du système de base
  
-Ayant divers problèmes d'installation de Virtualbox sur ma machine perosnnelle, j'ai donc tenté d'utiliser Qemu-kvm,
-ainsi que virtual-manager, pour finalement réussir à faire fonctionner VirtualBox et repasser dessus..
+Ayant divers problèmes d'installation de Virtualbox sur ma machine, plus précisément j'avais des messages d'erreur me disant de signer les modules kernel de Virtualbox, j'ai donc tenté d'utiliser Qemu-kvm ainsi que virtual-manager, pour finalement réussir à faire fonctionner VirtualBox,  et repasser dessus..
 J'ai donc ensuite installé une Debian Buster minimale à partir du mini.iso fourni, en mode rescue mode.
 J'ai ensuite choisi mon password root à l'aide de la commande passwd.
 
@@ -151,3 +150,31 @@ Et vérifier sa configuration :
     root@VMsas:~# lxc-ls
     c1   c2   c3   
 
+## 3. Mise en place du réseau 
+
+Les containers sont reliés entre eux par le biais d'un bridge nommé lxcbr0.
+On veut créer un bridge nommé lxc-bridge-nat pour relier nos containers au réseau de la machine hôte.
+
+### 3.1 Configuration de la machine hôte
+
+#### Création du bridge 
+
+Dans le fichier /etc/network/interfaces on insère : 
+
+    auto lxc-bridge-nat
+    iface lxc-bridge-nat inet static
+        bridge_ports none
+        bridge_fd 0
+        bridge_maxwait 0
+        address 192.168.100.1
+        netmask 255.255.255.0
+        up iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE
+
+Et dans le fichier /etc/sysctl.conf : 
+   
+    Uncomment the next line to enable packet forwarding for IPv4
+    net.ipv4.ip_forward=1
+   
+Et pour enable le forwarding on effectue cette commande : 
+     
+     echo 1 > /proc/sys/net/ipv4/ip_forward
