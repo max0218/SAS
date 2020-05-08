@@ -238,5 +238,5 @@ On peut vérifier que ça fonctionne bien en pingant le serveur DNS de Google :
     rtt min/avg/max/mdev = 5.796/6.533/7.270/0.737 ms
 
 
-
+##  4. Installation du serveur DHCP
 
