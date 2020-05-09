@@ -242,4 +242,78 @@ On peut vérifier que ça fonctionne bien en pingant le serveur DNS de Google :
 
 ### 4.1 Configurer le serveur DHCP sur le container C1
 
+On commence par installer le package isc-server-dhcp :
+
+    root@c1:/# apt-get install isc-dhcp-server
+
+Ensuite on modifie le fichier de configuration */etc/dhcp/dhcpd.conf* :
+
+    # option definitions common to all supported networks...
+    option domain-name "sas";
+    option domain-name-servers 192.168.1.1;
+
+    # Subnet configuration
+    subnet 192.168.100.0 netmask 255.255.255.0 {
+        range 192.168.100.128 192.168.100.192;
+        option subnet-mask 255.255.255.0;
+        option broadcast-address 192.168.100.255;
+        option routers 192.168.100.10;
+    }
+    
+Et on précise dans */etc/default/isc-dhcp-server*
+
+    INTERFACESv4="eth0"
+    
+Et dans */etc/network/interfaces*
+
+    # The loopback network interface
+    auto lo
+    iface lo inet loopback
+
+    auto eth0
+    iface eth0 inet static
+        address 192.168.100.10
+        netmask 255.255.255.0
+        broadcast 192.168.100.255
+        gateway 192.168.100.1
+
+    source /etc/network/interfaces.d/*.cfg
+    
+ On peut maintenant vérifier que le service DHCP fonctionne bien : 
+ 
+    root@c1:/# service isc-dhcp-server restart 
+    root@c1:/# service isc-dhcp-server status
+    ● isc-dhcp-server.service - LSB: DHCP server
+       Loaded: loaded (/etc/init.d/isc-dhcp-server; generated)
+       Active: active (running) since Sat 2020-05-09 08:09:52 UTC; 7s ago
+         Docs: man:systemd-sysv-generator(8)
+      Process: 702 ExecStart=/etc/init.d/isc-dhcp-server start (code=exited, status=0/SUCCESS)
+        Tasks: 1 (limit: 4698)
+       Memory: 4.5M
+       CGroup: /system.slice/isc-dhcp-server.service
+               └─714 /usr/sbin/dhcpd -4 -q -cf /etc/dhcp/dhcpd.conf eth0
+
+    May 09 08:09:50 c1 systemd[1]: Starting LSB: DHCP server...
+    May 09 08:09:50 c1 isc-dhcp-server[702]: Launching IPv4 server only.
+    May 09 08:09:50 c1 dhcpd[714]: Wrote 1 leases to leases file.
+    May 09 08:09:50 c1 dhcpd[714]: Server starting service.
+    May 09 08:09:52 c1 isc-dhcp-server[702]: Starting ISC DHCPv4 server: dhcpd.
+    May 09 08:09:52 c1 systemd[1]: Started LSB: DHCP server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
